@@ -1,7 +1,16 @@
-image:
-  file: .gitpod.Dockerfile
-
 tasks:
-  - name: Start Desktop
+  - name: Desktop
     command: |
-      sudo /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+      sudo apt update
+      sudo apt install -y xfce4 xfce4-goodies x11vnc xvfb chromium-browser
+      mkdir -p ~/.vnc
+      x11vnc -storepasswd 1234 ~/.vnc/passwd
+      Xvfb :0 -screen 0 1280x720x16 &
+      export DISPLAY=:0
+      startxfce4 &
+      x11vnc -display :0 -forever -usepw -shared &
+
+ports:
+  - port: 5900
+    onOpen: open-preview
+    visibility: public
